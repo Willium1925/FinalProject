@@ -16,7 +16,8 @@ struct ContentView: View {
 
             HomeView()
                 .tabItem {
-                    Label("首頁", systemImage: "house")
+                    // 將圖示改為燈泡
+                    Label("靈感", systemImage: "lightbulb")
                 }
 
             SearchView()

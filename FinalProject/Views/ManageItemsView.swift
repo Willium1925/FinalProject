@@ -9,6 +9,11 @@ struct ManageItemsView<T: Nameable>: View {
     @State private var isShowingAddAlert = false
     @State private var newItemName = ""
 
+    // 用來控制編輯狀態
+    @State private var editingItem: T?
+    @State private var editingName = ""
+    @State private var isShowingEditAlert = false
+
     private let title: String
 
     init() {
@@ -30,8 +35,20 @@ struct ManageItemsView<T: Nameable>: View {
         List {
             ForEach(items) { item in
                 Text(item.name)
+                    .contextMenu {
+                        Button {
+                            startEditing(item)
+                        } label: {
+                            Label("編輯", systemImage: "pencil")
+                        }
+
+                        Button(role: .destructive) {
+                            deleteItem(item)
+                        } label: {
+                            Label("刪除", systemImage: "trash")
+                        }
+                    }
             }
-            .onDelete(perform: deleteItems)
         }
         .navigationTitle("管理\(title)")
         .toolbar {
@@ -41,10 +58,19 @@ struct ManageItemsView<T: Nameable>: View {
                 }
             }
         }
+        // 新增 Alert
         .alert("新增\(title)", isPresented: $isShowingAddAlert) {
             TextField("名稱", text: $newItemName)
             Button("新增") {
                 addItem()
+            }
+            Button("取消", role: .cancel) {}
+        }
+        // 編輯 Alert
+        .alert("編輯\(title)", isPresented: $isShowingEditAlert) {
+            TextField("名稱", text: $editingName)
+            Button("儲存") {
+                saveEdit()
             }
             Button("取消", role: .cancel) {}
         }
@@ -57,10 +83,21 @@ struct ManageItemsView<T: Nameable>: View {
         newItemName = ""
     }
 
-    private func deleteItems(at offsets: IndexSet) {
-        for index in offsets {
-            modelContext.delete(items[index])
-        }
+    private func startEditing(_ item: T) {
+        editingItem = item
+        editingName = item.name
+        isShowingEditAlert = true
+    }
+
+    private func saveEdit() {
+        guard let item = editingItem, !editingName.isEmpty else { return }
+        item.name = editingName
+        editingItem = nil
+        editingName = ""
+    }
+
+    private func deleteItem(_ item: T) {
+        modelContext.delete(item)
     }
 }
 
