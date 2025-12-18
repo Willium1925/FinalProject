@@ -14,6 +14,11 @@ struct ContentView: View {
                     Label("標籤", systemImage: "tag")
                 }
 
+            HomeView()
+                .tabItem {
+                    Label("首頁", systemImage: "house")
+                }
+
             SearchView()
                 .tabItem {
                     Label("搜尋", systemImage: "magnifyingglass")

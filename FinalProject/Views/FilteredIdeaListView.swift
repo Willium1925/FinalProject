@@ -37,26 +37,28 @@ struct FilteredIdeaListView: View {
     var body: some View {
         let ideas = ideasToShow
 
-        // 使用 Group 來避免在 if/else 中重複 List 程式碼
         Group {
             if ideas.isEmpty {
                 ContentUnavailableView("沒有符合條件的點子", systemImage: "tray.fill")
             } else {
-                List(ideas) { idea in
-                    VStack(alignment: .leading) {
-                        Text(idea.content)
-                            .fontWeight(.medium)
-                        if !idea.note.isEmpty {
-                            Text(idea.note)
-                                .font(.caption)
-                                .foregroundColor(.secondary)
+                List {
+                    ForEach(ideas) { idea in
+                        NavigationLink(destination: IdeaDetailView(idea: idea)) {
+                            VStack(alignment: .leading) {
+                                Text(idea.content)
+                                    .fontWeight(.medium)
+                                if !idea.note.isEmpty {
+                                    Text(idea.note)
+                                        .font(.caption)
+                                        .foregroundColor(.secondary)
+                                }
+                            }
                         }
                     }
                 }
             }
         }
         .toolbar {
-            // 只在場景或標籤頁面顯示 "+" 按鈕
             if scene != nil || tag != nil {
                 ToolbarItem(placement: .primaryAction) {
                     Button(action: {
@@ -68,7 +70,6 @@ struct FilteredIdeaListView: View {
             }
         }
         .sheet(isPresented: $isAddingIdea) {
-            // 傳遞預設值
             AddIdeaView(defaultScene: scene, defaultTag: tag)
         }
     }

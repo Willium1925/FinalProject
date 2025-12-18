@@ -3,7 +3,7 @@ import Foundation
 import SwiftData
 
 @Model
-final class Scene {
+final class Scene: Nameable {
     @Attribute(.unique) var name: String
     var ideas: [Idea] = []
 

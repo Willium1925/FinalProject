@@ -25,11 +25,24 @@ struct AddIdeaView: View {
     @State private var isShowingAddSourceAlert = false
     @State private var newSourceName = ""
 
-    // 接收預設值
-    init(defaultScene: Scene? = nil, defaultTag: Tag? = nil) {
-        _selectedScene = State(initialValue: defaultScene)
-        if let defaultTag {
-            _selectedTags = State(initialValue: [defaultTag])
+    // 用來判斷是新增還是編輯
+    var ideaToEdit: Idea?
+
+    init(ideaToEdit: Idea? = nil, defaultScene: Scene? = nil, defaultTag: Tag? = nil) {
+        self.ideaToEdit = ideaToEdit
+
+        // 根據模式初始化
+        if let idea = ideaToEdit {
+            _content = State(initialValue: idea.content)
+            _note = State(initialValue: idea.note)
+            _selectedScene = State(initialValue: idea.scenes.first)
+            _selectedTags = State(initialValue: Set(idea.tags))
+            _selectedSource = State(initialValue: idea.source)
+        } else {
+            _selectedScene = State(initialValue: defaultScene)
+            if let defaultTag {
+                _selectedTags = State(initialValue: [defaultTag])
+            }
         }
     }
 
@@ -41,7 +54,7 @@ struct AddIdeaView: View {
                         Text("內文")
                             .font(.headline)
                         TextField("請輸入那句話...", text: $content, axis: .vertical)
-                            .lineLimit(3...6) // 讓它至少有 3 行高，最多 6 行
+                            .lineLimit(3...6)
                             .textFieldStyle(.roundedBorder)
                     }
                     .padding(.vertical, 4)
@@ -110,14 +123,14 @@ struct AddIdeaView: View {
                     }
                 }
             }
-            .navigationTitle("新增點子")
+            .navigationTitle(ideaToEdit == nil ? "新增點子" : "編輯點子")
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("取消") { dismiss() }
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("儲存") {
-                        saveIdea()
+                        save()
                         dismiss()
                     }
                     .disabled(content.isEmpty)
@@ -141,16 +154,24 @@ struct AddIdeaView: View {
         }
     }
 
-    private func saveIdea() {
-        let newIdea = Idea(content: content, note: note)
-        if let selectedScene {
-            newIdea.scenes = [selectedScene]
-        }
-        if let selectedSource {
+    private func save() {
+        if let idea = ideaToEdit {
+            // 編輯模式
+            idea.content = content
+            idea.note = note
+            idea.source = selectedSource
+            idea.scenes = selectedScene != nil ? [selectedScene!] : []
+            idea.tags = Array(selectedTags)
+        } else {
+            // 新增模式
+            let newIdea = Idea(content: content, note: note)
             newIdea.source = selectedSource
+            if let selectedScene {
+                newIdea.scenes = [selectedScene]
+            }
+            newIdea.tags = Array(selectedTags)
+            modelContext.insert(newIdea)
         }
-        newIdea.tags = Array(selectedTags)
-        modelContext.insert(newIdea)
     }
 
     private func addNewScene() {
