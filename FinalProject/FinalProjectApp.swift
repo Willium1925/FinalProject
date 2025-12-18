@@ -1,9 +1,3 @@
-//
-//  FinalProjectApp.swift
-//  FinalProject
-//
-//  Created by Demo0820 on 2025/12/19.
-//
 
 import SwiftUI
 import SwiftData
@@ -12,7 +6,10 @@ import SwiftData
 struct FinalProjectApp: App {
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
-            Item.self,
+            Idea.self,
+            Source.self,
+            Tag.self,
+            Scene.self,
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
 
@@ -23,7 +20,8 @@ struct FinalProjectApp: App {
         }
     }()
 
-    var body: some Scene {
+    // 明確指定這裡是 SwiftUI.Scene，避免與 Model 的 Scene 衝突
+    var body: some SwiftUI.Scene {
         WindowGroup {
             ContentView()
         }

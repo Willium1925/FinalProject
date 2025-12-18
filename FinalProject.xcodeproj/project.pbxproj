@@ -29,9 +29,22 @@
 		F8CBF6532EF4768800BBB3E9 /* FinalProjectUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FinalProjectUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		F8CBF6892EF47D9400BBB3E9 /* Exceptions for "FinalProject" folder in "FinalProject" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Views/Untitled.swift,
+			);
+			target = F8CBF6382EF4768600BBB3E9 /* FinalProject */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		F8CBF63B2EF4768600BBB3E9 /* FinalProject */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				F8CBF6892EF47D9400BBB3E9 /* Exceptions for "FinalProject" folder in "FinalProject" target */,
+			);
 			path = FinalProject;
 			sourceTree = "<group>";
 		};
@@ -43,6 +56,11 @@
 		F8CBF6562EF4768800BBB3E9 /* FinalProjectUITests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = FinalProjectUITests;
+			sourceTree = "<group>";
+		};
+		F8CBF6662EF4778200BBB3E9 /* doc */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = doc;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -75,6 +93,7 @@
 		F8CBF6302EF4768600BBB3E9 = {
 			isa = PBXGroup;
 			children = (
+				F8CBF6662EF4778200BBB3E9 /* doc */,
 				F8CBF63B2EF4768600BBB3E9 /* FinalProject */,
 				F8CBF64C2EF4768800BBB3E9 /* FinalProjectTests */,
 				F8CBF6562EF4768800BBB3E9 /* FinalProjectUITests */,
@@ -109,6 +128,7 @@
 			);
 			fileSystemSynchronizedGroups = (
 				F8CBF63B2EF4768600BBB3E9 /* FinalProject */,
+				F8CBF6662EF4778200BBB3E9 /* doc */,
 			);
 			name = FinalProject;
 			packageProductDependencies = (
