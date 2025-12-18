@@ -25,13 +25,40 @@ struct AddIdeaView: View {
     @State private var isShowingAddSourceAlert = false
     @State private var newSourceName = ""
 
+    // 接收預設值
+    init(defaultScene: Scene? = nil, defaultTag: Tag? = nil) {
+        _selectedScene = State(initialValue: defaultScene)
+        if let defaultTag {
+            _selectedTags = State(initialValue: [defaultTag])
+        }
+    }
+
     var body: some View {
         NavigationStack {
             Form {
-                Section("內容") {
-                    TextField("內文", text: $content)
-                    TextEditor(text: $note)
-                        .frame(minHeight: 100)
+                Section {
+                    VStack(alignment: .leading) {
+                        Text("內文")
+                            .font(.headline)
+                        TextField("請輸入那句話...", text: $content, axis: .vertical)
+                            .lineLimit(3...6) // 讓它至少有 3 行高，最多 6 行
+                            .textFieldStyle(.roundedBorder)
+                    }
+                    .padding(.vertical, 4)
+
+                    VStack(alignment: .leading) {
+                        Text("備註")
+                            .font(.headline)
+                        TextEditor(text: $note)
+                            .frame(minHeight: 100)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 8)
+                                    .stroke(Color.gray.opacity(0.2), lineWidth: 1)
+                            )
+                    }
+                    .padding(.vertical, 4)
+                } header: {
+                    Text("內容")
                 }
 
                 Section("來源") {
@@ -59,10 +86,24 @@ struct AddIdeaView: View {
                 }
 
                 Section("標籤") {
-                    List(tags, selection: $selectedTags) { tag in
-                        Text(tag.name)
+                    ForEach(tags) { tag in
+                        HStack {
+                            Text(tag.name)
+                            Spacer()
+                            if selectedTags.contains(tag) {
+                                Image(systemName: "checkmark")
+                                    .foregroundColor(.blue)
+                            }
+                        }
+                        .contentShape(Rectangle())
+                        .onTapGesture {
+                            if selectedTags.contains(tag) {
+                                selectedTags.remove(tag)
+                            } else {
+                                selectedTags.insert(tag)
+                            }
+                        }
                     }
-                    .environment(\.editMode, .constant(.active))
 
                     Button(action: { isShowingAddTagAlert = true }) {
                         Label("新增標籤", systemImage: "plus.circle")
