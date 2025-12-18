@@ -6,7 +6,6 @@ struct IdeaDetailView: View {
     @Bindable var idea: Idea
     @State private var isEditing = false
 
-    // 建立一個靜態的 formatter，避免重複建立，並強制使用繁體中文
     private static let relativeFormatter: RelativeDateTimeFormatter = {
         let formatter = RelativeDateTimeFormatter()
         formatter.unitsStyle = .full
@@ -15,55 +14,83 @@ struct IdeaDetailView: View {
     }()
 
     var body: some View {
-        Form {
-            Section("內容") {
-                Text(idea.content)
-                    .font(.body)
-            }
+        ZStack {
+            Color.black.ignoresSafeArea()
 
-            if !idea.note.isEmpty {
-                Section("備註") {
-                    Text(idea.note)
-                }
-            }
+            ScrollView {
+                VStack(alignment: .leading, spacing: 24) {
+                    // 內文
+                    Text(idea.content)
+                        .font(.largeTitle)
+                        .fontWeight(.bold)
+                        .foregroundColor(.white)
 
-            if let source = idea.source {
-                Section("來源") {
-                    Text(source.name)
-                }
-            }
+                    // 備註
+                    if !idea.note.isEmpty {
+                        Text(idea.note)
+                            .font(.body)
+                            .foregroundColor(.gray)
+                            .frame(maxWidth: .infinity, alignment: .leading) // 關鍵修改：讓寬度撐滿
+                            .padding()
+                            .background(Color.white.opacity(0.1))
+                            .cornerRadius(12)
+                    }
 
-            if !idea.scenes.isEmpty {
-                Section("場景") {
-                    ForEach(idea.scenes) { scene in
-                        Text(scene.name)
+                    // 來源、場景、標籤
+                    VStack(alignment: .leading, spacing: 16) {
+                        if let source = idea.source {
+                            DetailRow(icon: "lightbulb", title: "來源", content: source.name)
+                        }
+                        if !idea.scenes.isEmpty {
+                            DetailRow(icon: "film.stack", title: "場景", content: idea.scenes.map(\.name).joined(separator: ", "))
+                        }
+                        if !idea.tags.isEmpty {
+                            DetailRow(icon: "tag", title: "標籤", content: idea.tags.map(\.name).joined(separator: ", "))
+                        }
+                        DetailRow(icon: "calendar", title: "建立時間", content: Self.relativeFormatter.localizedString(for: idea.createdAt, relativeTo: Date()))
                     }
                 }
-            }
-
-            if !idea.tags.isEmpty {
-                Section("標籤") {
-                    ForEach(idea.tags) { tag in
-                        Text(tag.name)
-                    }
-                }
-            }
-
-            Section("建立時間") {
-                // 使用原生的 RelativeDateTimeFormatter
-                Text(Self.relativeFormatter.localizedString(for: idea.createdAt, relativeTo: Date()))
+                .padding()
             }
         }
+        .preferredColorScheme(.dark)
         .navigationTitle("詳細資訊")
+        .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
                 Button("編輯") {
                     isEditing = true
                 }
+                .foregroundColor(.white)
             }
         }
         .sheet(isPresented: $isEditing) {
             AddIdeaView(ideaToEdit: idea)
+        }
+    }
+}
+
+// 詳情頁的輔助 View
+struct DetailRow: View {
+    let icon: String
+    let title: String
+    let content: String
+
+    var body: some View {
+        HStack(alignment: .top) {
+            Image(systemName: icon)
+                .frame(width: 24)
+                .foregroundColor(.gray)
+
+            VStack(alignment: .leading) {
+                Text(title)
+                    .font(.caption)
+                    .foregroundColor(.gray)
+                Text(content)
+                    .foregroundColor(.white)
+            }
+
+            Spacer()
         }
     }
 }

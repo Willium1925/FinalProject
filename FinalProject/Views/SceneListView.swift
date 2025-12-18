@@ -9,21 +9,29 @@ struct SceneListView: View {
 
     var body: some View {
         NavigationStack {
-            List {
-                ForEach(scenes) { scene in
-                    NavigationLink(destination: FilteredIdeaListView(scene: scene).navigationTitle(scene.name)) {
-                        Text(scene.name)
+            ZStack {
+                Color.black.ignoresSafeArea()
+
+                ScrollView {
+                    LazyVStack(spacing: 12) {
+                        ForEach(scenes) { scene in
+                            NavigationLink(destination: FilteredIdeaListView(scene: scene).navigationTitle(scene.name)) {
+                                SceneRowView(scene: scene)
+                            }
+                        }
                     }
+                    .padding()
                 }
             }
             .navigationTitle("場景")
+            .navigationBarTitleDisplayMode(.large)
+            .preferredColorScheme(.dark)
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {
-                    Button(action: {
-                        isAddingIdea = true
-                    }) {
+                    Button(action: { isAddingIdea = true }) {
                         Image(systemName: "plus")
                     }
+                    .foregroundColor(.white)
                 }
             }
             .sheet(isPresented: $isAddingIdea) {
@@ -33,14 +41,43 @@ struct SceneListView: View {
         }
     }
 
-    // 方便測試，之後可以移除
     private func addSampleData() {
         if scenes.isEmpty {
-            let sampleScene1 = Scene(name: "工作心法")
-            let sampleScene2 = Scene(name: "社交話題")
-            modelContext.insert(sampleScene1)
-            modelContext.insert(sampleScene2)
+            modelContext.insert(Scene(name: "工作心法"))
+            modelContext.insert(Scene(name: "社交話題"))
+            modelContext.insert(Scene(name: "電影台詞"))
+            modelContext.insert(Scene(name: "人生哲學"))
         }
+    }
+}
+
+struct SceneRowView: View {
+    let scene: Scene
+
+    var body: some View {
+        HStack {
+            VStack(alignment: .leading, spacing: 4) {
+                Text(scene.name)
+                    .font(.title3)
+                    .fontWeight(.bold)
+                    .foregroundColor(.white)
+
+                Text("\(scene.ideas.count) 個點子")
+                    .font(.caption)
+                    .fontWeight(.medium)
+                    .foregroundColor(.white.opacity(0.8))
+            }
+
+            Spacer()
+
+            Image(systemName: "chevron.right")
+                .foregroundColor(.white.opacity(0.6))
+                .font(.caption)
+        }
+        .padding(20) // 增加內距，讓卡片看起來更飽滿
+        .background(Color.gradient(seed: scene.name)) // 整張卡片使用漸層背景
+        .cornerRadius(16)
+        .shadow(color: Color.black.opacity(0.2), radius: 5, x: 0, y: 2)
     }
 }
 

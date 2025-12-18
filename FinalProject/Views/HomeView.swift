@@ -55,20 +55,21 @@ struct HomeView: View {
                             .frame(maxHeight: .infinity)
                     } else {
                         ScrollView(.vertical, showsIndicators: false) {
-                            LazyVStack(spacing: 16) {
+                            LazyVStack(spacing: 12) { // 減少卡片間距
                                 ForEach(filteredIdeas) { idea in
                                     NavigationLink(destination: IdeaDetailView(idea: idea)) {
                                         IdeaCardView(idea: idea)
-                                            .containerRelativeFrame(.vertical, count: 4, spacing: 16)
+                                            // 稍微放寬高度限制，讓內容能顯示更多
+                                            .containerRelativeFrame(.vertical, count: 4, spacing: 12)
                                     }
                                     .buttonStyle(.plain)
                                 }
                             }
                             .scrollTargetLayout()
-                            .padding(.vertical, 20)
+                            .padding(.vertical, 16)
                         }
                         .scrollTargetBehavior(.viewAligned)
-                        .contentMargins(.horizontal, 20, for: .scrollContent)
+                        .contentMargins(.horizontal, 16, for: .scrollContent) // 減少左右邊距
                     }
                 }
             }
@@ -121,41 +122,46 @@ struct IdeaCardView: View {
 
     var body: some View {
         ZStack {
-            RoundedRectangle(cornerRadius: 16)
+            RoundedRectangle(cornerRadius: 12) // 稍微減小圓角
                 .fill(Color(uiColor: .secondarySystemGroupedBackground))
-                .shadow(color: Color.black.opacity(0.05), radius: 5, x: 0, y: 2)
+                .shadow(color: Color.black.opacity(0.05), radius: 3, x: 0, y: 1)
 
-            VStack(alignment: .center, spacing: 8) {
-                // 來源 (如果有的話)
-                if let source = idea.source {
-                    Text(source.name)
-                        .font(.caption)
-                        .fontWeight(.bold)
-                        .padding(.horizontal, 8)
-                        .padding(.vertical, 4)
-                        .background(Color.blue.opacity(0.1))
-                        .foregroundColor(.blue)
-                        .cornerRadius(8)
-                }
-
-                // 內文
+            VStack(alignment: .leading, spacing: 6) { // 緊湊的垂直排列
+                // 內文 - 盡量顯示
                 Text(idea.content)
                     .font(.headline)
                     .fontWeight(.medium)
-                    .multilineTextAlignment(.center)
                     .foregroundColor(.primary)
-                    .lineLimit(2)
-                    .padding(.horizontal, 4)
+                    .lineLimit(3) // 允許最多 3 行
+                    .frame(maxWidth: .infinity, alignment: .leading) // 靠左對齊
 
-                // 備註
+                // 備註 - 輔助資訊
                 if !idea.note.isEmpty {
                     Text(idea.note)
                         .font(.caption)
                         .foregroundColor(.secondary)
                         .lineLimit(1)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                }
+
+                Spacer(minLength: 0) // 彈性空間，但允許壓縮
+
+                // 底部資訊列：來源 (右下角)
+                if let source = idea.source {
+                    HStack {
+                        Spacer()
+                        Text(source.name)
+                            .font(.caption)
+                            .fontWeight(.bold)
+                            .padding(.horizontal, 6)
+                            .padding(.vertical, 2)
+                            .background(Color.blue.opacity(0.1)) // 改回藍色
+                            .foregroundColor(.blue)
+                            .cornerRadius(4)
+                    }
                 }
             }
-            .padding(12)
+            .padding(10) // 減少內邊距
         }
     }
 }
