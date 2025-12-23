@@ -2,6 +2,7 @@
 import SwiftUI
 import SwiftData
 
+// 意思是：這個 View 接受一個類型 T，但 T 必須遵守 Nameable 協定
 struct SelectionView<T: Nameable>: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext

@@ -2,8 +2,11 @@
 import SwiftUI
 import SwiftData
 
+// 意思是：這個 View 接受一個類型 T，但 T 必須遵守 Nameable 協定
 struct ManageItemsView<T: Nameable>: View {
     @Environment(\.modelContext) private var modelContext
+    
+    // 這裡的 @Query 會自動根據 T 的具體類型去資料庫抓資料
     @Query private var items: [T]
 
     @State private var isShowingAddAlert = false
