@@ -45,7 +45,7 @@ struct FilteredIdeaListView: View {
 
             Group {
                 if ideas.isEmpty {
-                    ContentUnavailableView("沒有符合條件的點子", systemImage: "tray.fill")
+                    ContentUnavailableView("尚無內容", systemImage: "tray.fill")
                         .preferredColorScheme(.dark)
                 } else {
                     ScrollView {

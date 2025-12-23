@@ -62,7 +62,7 @@ struct SceneRowView: View {
                     .fontWeight(.bold)
                     .foregroundColor(.white)
 
-                Text("\(scene.ideas.count) 個點子")
+                Text("\(scene.ideas.count) 個內容")
                     .font(.caption)
                     .fontWeight(.medium)
                     .foregroundColor(.white.opacity(0.8))

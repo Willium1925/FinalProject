@@ -76,7 +76,7 @@ struct AddIdeaView: View {
                     Button(action: { isShowingTagSelector = true }) { Label("加入標籤", systemImage: "plus.circle") }
                 }
             }
-            .navigationTitle(ideaToEdit == nil ? "新增點子" : "編輯點子")
+            .navigationTitle(ideaToEdit == nil ? "新增內容" : "編輯內容")
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) { Button("取消") { dismiss() } }
                 ToolbarItem(placement: .confirmationAction) { Button("儲存") { save(); dismiss() }.disabled(content.isEmpty) }

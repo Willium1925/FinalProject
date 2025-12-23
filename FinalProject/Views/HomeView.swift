@@ -51,7 +51,7 @@ struct HomeView: View {
 
                     // 下方卡片列表
                     if filteredIdeas.isEmpty {
-                        ContentUnavailableView("這裡還沒有點子", systemImage: "lightbulb.slash")
+                        ContentUnavailableView("這裡還沒有內容", systemImage: "lightbulb.slash")
                             .frame(maxHeight: .infinity)
                     } else {
                         ScrollView(.vertical, showsIndicators: false) {
