@@ -73,7 +73,7 @@ struct HomeView: View {
                     }
                 }
             }
-            .navigationTitle("靈感來源")
+            //.navigationTitle("靈感來源")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {
